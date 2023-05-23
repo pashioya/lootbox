@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -79,7 +80,7 @@
                         class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3"
                         id="advertisement-container"
                     >
-                        <div class="advertisement col border-none" th:each="advertisement : ${advertisements}" th:attr="data-advertisement-id=${advertisement.getId()}">
+                        <div class="advertisement col border-none" th:each="advertisement : ${advertisements}">
                             <div class="card shadow-sm border-">
                                 <svg
                                     class="bd-placeholder-img card-img-top"
@@ -107,8 +108,8 @@
                                     </text>
                                 </svg>
                                 <div class="card-body">
-                                    <p class="card-title" th:txt="${advertisement.getTitle()}"></p>
-                                    <p class="card-text" th:txt="${advertisement.getDescription()}"></p>
+                                    <p class="card-title text-bold fs-4" th:text="${advertisement.getTitle()}"></p>
+                                    <p class="card-text" th:text="${advertisement.getDescription()}"></p>
                                 </div>
                             </div>
                         </div>
