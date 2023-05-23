@@ -142,3 +142,7 @@ background-size: cover;
 .transformable:hover {
     transform: scale(1.04);
 }
+
+.remove-icon:hover {
+    cursor: pointer;
+}

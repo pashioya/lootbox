@@ -3,7 +3,6 @@ package lootbox.controller.api;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.*;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lootbox.controller.api.Dto.AdvertisementDto;
 import lootbox.controller.api.Dto.NewAdvertisementDto;
 import lootbox.domain.Advertisement;
@@ -23,17 +22,26 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 @RestController
-@AllArgsConstructor
 @RequestMapping("/api")
 public class AdvertisementRestController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private AdvertisementRepository advertisementRepo;
+    private final AdvertisementRepository advertisementRepo;
     private final ModelMapper modelMapper;
+    String keyPath = "src/main/resources/infra3-leemans-freddy-0f7fb09ef959.json";
+    GoogleCredentials credentials;
+    String BUCKET_NAME = "bucket-1684830831";
+    Storage storage;
 
-    private final String PROJECT_ID = "infra3-freddy-leemans";
+    public AdvertisementRestController(AdvertisementRepository advertisementRepo, ModelMapper modelMapper) throws IOException {
+        this.advertisementRepo = advertisementRepo;
+        this.modelMapper = modelMapper;
+        this.credentials = GoogleCredentials.fromStream(new FileInputStream(keyPath));
+        this.storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
+    }
 
     @PostMapping(path = "/add-advertisement", consumes = {"multipart/form-data"})
     public ResponseEntity<AdvertisementDto> addIdea(@ModelAttribute @Valid NewAdvertisementDto newAdvertisementDto) throws IOException {
@@ -49,6 +57,22 @@ public class AdvertisementRestController {
         return new ResponseEntity<>(createdAdDto, HttpStatus.CREATED);
     }
 
+    @DeleteMapping("/delete-advertisement/{id}")
+    public ResponseEntity<Void> deleteAdvertisement(@PathVariable int id) {
+        if (advertisementRepo.existsById((long) id)) {
+            String path = advertisementRepo.findById((long) id).get().getImage();
+            advertisementRepo.deleteById((long) id);
+            deleteFile(path);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    private void deleteFile(String imgPath) {
+        storage.delete(BUCKET_NAME, imgPath);
+    }
+
 
     public static String generateImageName() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
@@ -58,12 +82,8 @@ public class AdvertisementRestController {
     }
 
     public String uploadObject(String objectName, String filePath) throws IOException {
-        String BUCKET_NAME = "bucket-1684830831";
         BlobId blobId = BlobId.of(BUCKET_NAME, objectName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
-        String keyPath = "src/main/resources/infra3-leemans-freddy-0f7fb09ef959.json";
-        GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(keyPath));
-        Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
 
         Blob image = storage.createFrom(blobInfo, Paths.get(filePath));
         return image.getMediaLink();
@@ -78,12 +98,11 @@ public class AdvertisementRestController {
         String imageName = generateImageName() + extension;
         String file_path = dir + "/" + imageName;
         image.transferTo(Path.of(file_path));
-        String path = uploadObject(image.getOriginalFilename(), file_path);
         File file = new File(file_path);
         boolean deleted = file.delete();
 
         if (deleted) {
-            return path;
+            return originalFilename;
         } else {
             return null;
         }
@@ -101,4 +120,8 @@ public class AdvertisementRestController {
         );
         return new ResponseEntity<>(advertisementDto, HttpStatus.OK);
     }
+
+
+
+
 }

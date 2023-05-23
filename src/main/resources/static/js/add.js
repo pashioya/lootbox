@@ -1,3 +1,4 @@
+import {removeIdea} from "./remove.js"
 import {setAdvertOnclick} from "./advertisement.js";
 
 const adTitleInput = document.getElementById("title");
@@ -54,11 +55,15 @@ async function addAdvertisement(ad) {
     card.innerHTML += `
                         <a class="stretched-link advertisement-link" data-bs-toggle="modal" href="#full-advertisement-display" role="button"></a>
                         <div class="card shadow-sm border-">
+                        <i id="remove-icon" class="bi bi-trash remove-icon"></i>
                         <img class="w-100 h-100" src="${ad.image}"
                         <div class="card-body">
                             <p class="card-title text-bold fs-4">${ad.title}</p>
                             <p class="card-text">${ad.description}</p>
                         </div>`;
+    const removeIcon = document.getElementById("remove-icon");
+    removeIcon.addEventListener('click', removeIdea);
+
     feed.appendChild(card);
 }
 
