@@ -1,3 +1,5 @@
+import {setAdvertOnclick} from "./advertisement.js";
+
 const adTitleInput = document.getElementById("title");
 const adDescriptionInput = document.getElementById("description");
 const adEmailInput = document.getElementById("email");
@@ -5,6 +7,7 @@ const adPhoneInput = document.getElementById("phoneNumber");
 
 const fileInput = document.querySelector('input[type="file"]');
 const form = document.getElementById("ad-form");
+const clsBtn = document.querySelectorAll(".btn-close");
 
 form.addEventListener("submit", trySubmitAd);
 
@@ -28,9 +31,9 @@ function trySubmitAd(event) {
             if (response.status === 201) {
                 form.reset();
                 form.classList.remove('was-validated');
-
                 const newAd = await response.json();
                 addAdvertisement(newAd);
+                clsBtn.forEach(btn => btn.click());
             }
         });
     }
@@ -43,9 +46,14 @@ async function addAdvertisement(ad) {
     card.classList.add("advertisement");
     card.classList.add("col");
     card.classList.add("border-none");
+    card.classList.add("transformable");
+    card.classList.add("position-relative");
 
-
-    card.innerHTML += `<div class="card shadow-sm border-">
+    card.setAttribute("data-ad-id", ad.id)
+    setAdvertOnclick(card);
+    card.innerHTML += `
+                        <a class="stretched-link advertisement-link" data-bs-toggle="modal" href="#full-advertisement-display" role="button"></a>
+                        <div class="card shadow-sm border-">
                         <img class="w-100 h-100" src="${ad.image}"
                         <div class="card-body">
                             <p class="card-title text-bold fs-4">${ad.title}</p>

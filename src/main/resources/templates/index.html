@@ -1,144 +1,155 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <meta name="description" content=""/>
-    <meta
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="" />
+        <meta
             name="author"
             content="Mark Otto, Jacob Thornton, and Bootstrap contributors"
-    />
-    <meta name="generator" content="Hugo 0.104.2"/>
-    <title>LootBox</title>
-    <link
-            rel="stylesheet"
-            th:href="@{/webjars/bootstrap/5.2.3/css/bootstrap.min.css}"
-    />
-    <script
-            defer
-            th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.bundle.min.js}"
-    ></script>
-    <script defer src="/js/add.js"></script>
-    <link
-            rel="stylesheet"
-            th:href="@{/css/global.css}"
-    />
-</head>
-<body>
-<header
-        class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow"
->
-    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#"
-    >LootBox</a
-    >
-    <button
-            class="navbar-toggler position-absolute d-md-none collapsed"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#sidebarMenu"
-            aria-controls="sidebarMenu"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-    >
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <input
-            class="form-control form-control-dark w-100 rounded-0 border-0"
-            id="search-bar"
-            type="text"
-            placeholder="Search"
-            aria-label="Search"
-    />
-    <div class="navbar-nav w-50"></div>
-</header>
-
-<main class="">
-    <section class="py-5 text-center container">
-        <div class="row py-lg-5">
-            <div class="col-lg-6 col-md-8 mx-auto">
-                <h1 class="fw-light">Advertisement Galore</h1>
-                <p class="lead text-muted">
-                    Look at a bunch of ads and make some of your own!
-                </p>
-                <p>
-                    <button
-                            type="button"
-                            class="btn btn-dark rounded-0"
-                            data-bs-toggle="modal"
-                            data-bs-target="#addAdvertisementModal"
-                    >
-                        Create a Advertisement
-                    </button>
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <div class="py-5">
-        <div class="container">
-            <div
-                    class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3"
-                    id="advertisement-container"
+        />
+        <meta name="generator" content="Hugo 0.104.2" />
+        <title>LootBox</title>
+        <link
+                rel="stylesheet"
+                th:href="@{/webjars/bootstrap/5.2.3/css/bootstrap.min.css}"
+        />
+        <script
+                defer
+                th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.bundle.min.js}"
+        ></script>
+        <link
+                rel="stylesheet"
+                th:href="@{/css/global.css}"
+        />
+        <script
+                defer
+                th:src="@{/js/advertisement.js}"
+                type="module"
+        >
+        </script>
+        <script
+                defer
+                th:src="@{/js/add.js}"
+                type="module">
+        </script>
+    </head>
+    <body>
+        <header
+            class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow"
+        >
+            <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#"
+                >LootBox</a
             >
-                <div class="advertisement col border-none" th:each="advertisement : ${advertisements}">
-                    <div class="card shadow-sm border-">
-                        <svg
-                                class="bd-placeholder-img card-img-top"
-                                width="100%"
-                                height="225"
-                                xmlns="http://www.w3.org/2000/svg"
-                                role="img"
-                                aria-label="Placeholder: Thumbnail"
-                                preserveAspectRatio="xMidYMid slice"
-                                focusable="false"
-                        >
-                            <title>Placeholder</title>
-                            <rect
-                                    width="100%"
-                                    height="100%"
-                                    fill="#55595c"
-                            />
-                            <text
-                                    x="50%"
-                                    y="50%"
-                                    fill="#eceeef"
-                                    dy=".3em"
+            <button
+                class="navbar-toggler position-absolute d-md-none collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#sidebarMenu"
+                aria-controls="sidebarMenu"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <input
+                class="form-control form-control-dark w-100 rounded-0 border-0"
+                id="search-bar"
+                type="text"
+                placeholder="Search"
+                aria-label="Search"
+            />
+            <div class="navbar-nav w-50"></div>
+        </header>
+
+        <main class="">
+            <section class="py-5 text-center container">
+                <div class="row py-lg-5">
+                    <div class="col-lg-6 col-md-8 mx-auto">
+                        <h1 class="fw-light">Advertisement Galore</h1>
+                        <p class="lead text-muted">
+                            Look at a bunch of ads and make some of your own!
+                        </p>
+                        <p>
+                            <button
+                                type="button"
+                                class="btn btn-dark rounded-0"
+                                data-bs-toggle="modal"
+                                data-bs-target="#addAdvertisementModal"
                             >
-                                Thumbnail
-                            </text>
-                        </svg>
-                        <div class="card-body">
-                            <p class="card-title text-bold fs-4" th:text="${advertisement.getTitle()}"></p>
-                            <p class="card-text" th:text="${advertisement.getDescription()}"></p>
+                                Create a Advertisement
+                            </button>
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="py-5">
+                <div class="container">
+                    <div
+                        class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3"
+                        id="advertisement-container"
+                    >
+                        <div class="advertisement col border-none transformable position-relative" th:each="advertisement : ${advertisements}" th:attr="data-ad-id=${advertisement.getId()}">
+                            <a class="stretched-link advertisement-link" data-bs-toggle="modal" href="#full-advertisement-display" role="button"></a>
+                            <div class="card shadow-sm border-">
+                                <svg
+                                    class="bd-placeholder-img card-img-top"
+                                    width="100%"
+                                    height="225"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    role="img"
+                                    aria-label="Placeholder: Thumbnail"
+                                    preserveAspectRatio="xMidYMid slice"
+                                    focusable="false"
+                                >
+                                    <title>Placeholder</title>
+                                    <rect
+                                        width="100%"
+                                        height="100%"
+                                        fill="#55595c"
+                                    />
+                                    <text
+                                        x="50%"
+                                        y="50%"
+                                        fill="#eceeef"
+                                        dy=".3em"
+                                    >
+                                        Thumbnail
+                                    </text>
+                                </svg>
+                                <div class="card-body">
+                                    <p class="card-title text-bold fs-4" th:text="${advertisement.getTitle()}"></p>
+                                    <p class="card-text" th:text="${advertisement.getDescription()}"></p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</main>
-<div
-        class="modal fade"
-        id="addAdvertisementModal"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        tabindex="-1"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
->
-    <div class="modal-dialog" role="document">
-        <div class="modal-content rounded-4 shadow">
-            <div class="modal-header p-5 pb-4 border-bottom-0">
-                <!-- <h1 class="modal-title fs-5" >Modal title</h1> -->
-                <h1 class="fw-bold mb-0 fs-2">Create Advertisement</h1>
-                <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                ></button>
-            </div>
+        </main>
+        <div
+            class="modal fade"
+            id="addAdvertisementModal"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            tabindex="-1"
+            aria-labelledby="staticBackdropLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content rounded-4 shadow">
+                    <div class="modal-header p-5 pb-4 border-bottom-0">
+                        <!-- <h1 class="modal-title fs-5" >Modal title</h1> -->
+                        <h1 class="fw-bold mb-0 fs-2">Create Advertisement</h1>
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                        ></button>
+                    </div>
 
                     <div class="modal-body p-5 pt-0">
                         <form id="ad-form" class="">
@@ -192,6 +203,37 @@
                             <small class="text-muted">
                                 By clicking Submit, you agree to the terms of use.</small>
                         </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div
+                class="modal fade"
+                id="full-advertisement-display"
+                data-bs-backdrop="static"
+                data-bs-keyboard="false"
+                tabindex="-1"
+                aria-labelledby="staticBackdropLabel"
+                aria-hidden="true"
+        >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content rounded-4 shadow">
+                    <div class="modal-header p-5 pb-4 border-bottom-0">
+                        <!-- <h1 class="modal-title fs-5" >Modal title</h1> -->
+                        <h1 class="fw-bold mb-0 fs-2">Advertisement</h1>
+                        <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"
+                        ></button>
+                    </div>
+
+                    <div class="modal-body p-5 pt-0">
+                        <p class="card-title text-bold fs-4" id="full-title">s</p>
+                        <p class="card-text" id="full-description">s</p>
+                        <p class="card-title text-bold fs-4" id="full-email">s</p>
+                        <p class="card-text" id="full-phone-number">s</p>
                     </div>
                 </div>
             </div>

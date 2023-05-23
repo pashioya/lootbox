@@ -1,10 +1,11 @@
-package lootbox.controller;
+package lootbox.controller.api;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.*;
 import jakarta.validation.Valid;
-import lootbox.controller.Dto.AdvertisementDto;
-import lootbox.controller.Dto.NewAdvertisementDto;
+import lombok.AllArgsConstructor;
+import lootbox.controller.api.Dto.AdvertisementDto;
+import lootbox.controller.api.Dto.NewAdvertisementDto;
 import lootbox.domain.Advertisement;
 import lootbox.repository.AdvertisementRepository;
 import org.modelmapper.ModelMapper;
@@ -12,10 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -28,6 +26,7 @@ import java.util.Date;
 import java.util.Random;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api")
 public class AdvertisementRestController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -35,15 +34,6 @@ public class AdvertisementRestController {
     private final ModelMapper modelMapper;
 
     private final String PROJECT_ID = "infra3-freddy-leemans";
-    private final String BUCKET_NAME = "bucket-1684830831";
-    String keyPath = "src/main/resources/infra3-leemans-freddy-0f7fb09ef959.json";
-    GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(keyPath));
-    Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
-
-    public AdvertisementRestController(AdvertisementRepository advertisementRepo, ModelMapper modelMapper) throws IOException {
-        this.advertisementRepo = advertisementRepo;
-        this.modelMapper = modelMapper;
-    }
 
     @PostMapping(path = "/add-advertisement", consumes = {"multipart/form-data"})
     public ResponseEntity<AdvertisementDto> addIdea(@ModelAttribute @Valid NewAdvertisementDto newAdvertisementDto) throws IOException {
@@ -68,8 +58,12 @@ public class AdvertisementRestController {
     }
 
     public String uploadObject(String objectName, String filePath) throws IOException {
+        String BUCKET_NAME = "bucket-1684830831";
         BlobId blobId = BlobId.of(BUCKET_NAME, objectName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
+        String keyPath = "src/main/resources/infra3-leemans-freddy-0f7fb09ef959.json";
+        GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(keyPath));
+        Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
 
         Blob image = storage.createFrom(blobInfo, Paths.get(filePath));
         return image.getMediaLink();
@@ -93,5 +87,18 @@ public class AdvertisementRestController {
         } else {
             return null;
         }
+    }
+
+    @GetMapping("/advertisement/{id}")
+    public ResponseEntity<AdvertisementDto> getAdvertisement(@PathVariable Long id) {
+        Advertisement advertisement = advertisementRepo.getReferenceById(id);
+        AdvertisementDto advertisementDto = new AdvertisementDto(
+                advertisement.getEmail(),
+                advertisement.getPhoneNumber(),
+                advertisement.getImage(),
+                advertisement.getTitle(),
+                advertisement.getDescription()
+        );
+        return new ResponseEntity<>(advertisementDto, HttpStatus.OK);
     }
 }

@@ -134,3 +134,11 @@ background-size: cover;
     border-color: transparent;
     box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25);
 }
+
+.transformable {
+    transition: transform 0.3s ease;
+}
+
+.transformable:hover {
+    transform: scale(1.04);
+}
