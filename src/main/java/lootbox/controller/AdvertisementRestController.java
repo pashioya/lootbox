@@ -35,7 +35,7 @@ public class AdvertisementRestController {
     private final ModelMapper modelMapper;
 
     private final String PROJECT_ID = "infra3-freddy-leemans";
-    private final String BUCKET_NAME = "gs://bucket-1684830831";
+    private final String BUCKET_NAME = "bucket-1684830831";
     String keyPath = "src/main/resources/infra3-leemans-freddy-0f7fb09ef959.json";
     GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(keyPath));
     Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
@@ -86,7 +86,12 @@ public class AdvertisementRestController {
         image.transferTo(Path.of(file_path));
         String path = uploadObject(image.getOriginalFilename(), file_path);
         File file = new File(file_path);
-        file.delete();
-        return path;
+        boolean deleted = file.delete();
+
+        if (deleted) {
+            return path;
+        } else {
+            return null;
+        }
     }
 }

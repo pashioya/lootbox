@@ -40,34 +40,13 @@ async function addAdvertisement(ad) {
     const feed = document.getElementById("advertisement-container");
 
     const card = document.createElement("div");
-    card.classList.add("advertisement col border-none");
+    card.classList.add("advertisement");
+    card.classList.add("col");
+    card.classList.add("border-none");
+
 
     card.innerHTML += `<div class="card shadow-sm border-">
-                        <svg
-                                class="bd-placeholder-img card-img-top"
-                                width="100%"
-                                height="225"
-                                xmlns="http://www.w3.org/2000/svg"
-                                role="img"
-                                aria-label="Placeholder: Thumbnail"
-                                preserveAspectRatio="xMidYMid slice"
-                                focusable="false"
-                        >
-                            <title>Placeholder</title>
-                            <rect
-                                    width="100%"
-                                    height="100%"
-                                    fill="#55595c"
-                            />
-                            <text
-                                    x="50%"
-                                    y="50%"
-                                    fill="#eceeef"
-                                    dy=".3em"
-                            >
-                                Thumbnail
-                            </text>
-                        </svg>
+                        <img class="w-100 h-100" src="${ad.image}"
                         <div class="card-body">
                             <p class="card-title text-bold fs-4">${ad.title}</p>
                             <p class="card-text">${ad.description}</p>
