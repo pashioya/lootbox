@@ -1,6 +1,6 @@
-package com.example.main.repository;
+package lootbox.repository;
 
-import com.example.main.domain.Advertisement;
+import lootbox.domain.Advertisement;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

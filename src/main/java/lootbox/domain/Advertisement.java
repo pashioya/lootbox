@@ -1,4 +1,5 @@
-package com.example.main.domain;
+package lootbox.domain;
+
 
 import jakarta.persistence.*;
 

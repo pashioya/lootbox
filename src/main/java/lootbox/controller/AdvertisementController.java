@@ -1,6 +1,6 @@
-package com.example.main.controller;
+package lootbox.controller;
 
-import com.example.main.repository.AdvertisementRepository;
+import lootbox.repository.AdvertisementRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
