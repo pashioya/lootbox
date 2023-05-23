@@ -29,6 +29,14 @@ public class Advertisement {
         this.description = description;
     }
 
+    public Advertisement(String email, String phoneNumber, String image, String title, String description) {
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.image = image;
+        this.title = title;
+        this.description = description;
+    }
+
     public Advertisement() {
 
     }
