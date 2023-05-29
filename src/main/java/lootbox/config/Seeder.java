@@ -1,4 +1,4 @@
-package lootbox.repository;
+package lootbox.config;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;

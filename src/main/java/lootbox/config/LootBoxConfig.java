@@ -1,4 +1,4 @@
-package lootbox;
+package lootbox.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
