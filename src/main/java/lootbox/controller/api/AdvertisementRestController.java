@@ -49,6 +49,19 @@ public class AdvertisementRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdAdDto);
     }
 
+    @GetMapping("/advertisement/{id}")
+    public ResponseEntity<AdvertisementDto> getAdvertisement(@PathVariable Long id) {
+        Advertisement advertisement = advertisementRepo.getReferenceById(id);
+        AdvertisementDto advertisementDto = new AdvertisementDto(
+                advertisement.getEmail(),
+                advertisement.getPhoneNumber(),
+                advertisement.getImage(),
+                advertisement.getTitle(),
+                advertisement.getDescription()
+        );
+        return new ResponseEntity<>(advertisementDto, HttpStatus.OK);
+    }
+
     @DeleteMapping("/delete-advertisement/{id}")
     public ResponseEntity<Void> deleteAdvertisement(@PathVariable long id) throws IOException {
         GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream("src/main/resources/infra3-leemans-freddy-0f7fb09ef959.json"));
@@ -123,16 +136,5 @@ public class AdvertisementRestController {
         String filename = path.substring(path.lastIndexOf('/') + 1);
         return filename.substring(0, filename.indexOf('?'));
     }
-    @GetMapping("/advertisement/{id}")
-    public ResponseEntity<AdvertisementDto> getAdvertisement(@PathVariable Long id) {
-        Advertisement advertisement = advertisementRepo.getReferenceById(id);
-        AdvertisementDto advertisementDto = new AdvertisementDto(
-                advertisement.getEmail(),
-                advertisement.getPhoneNumber(),
-                advertisement.getImage(),
-                advertisement.getTitle(),
-                advertisement.getDescription()
-        );
-        return new ResponseEntity<>(advertisementDto, HttpStatus.OK);
-    }
+
 }
