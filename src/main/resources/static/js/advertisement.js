@@ -12,6 +12,7 @@ export function setAdvertOnclick(advertisement){
         let fullDescription = document.querySelector("#full-description");
         let fullPhoneNumber = document.querySelector("#full-phone-number");
         let fullEmail = document.querySelector("#full-email");
+        let deleteButton = document.querySelector("#delete-button");
         let response = await getFullAdvertisement(advertisementId);
         let advertisementJson = await response.json();
 
@@ -20,6 +21,7 @@ export function setAdvertOnclick(advertisement){
         fullDescription.innerText = advertisementJson.description;
         fullPhoneNumber.innerText = advertisementJson.phoneNumber;
         fullEmail.innerText = advertisementJson.email;
+        deleteButton.setAttribute("data-ad-id", advertisementId);
     })
 }
 

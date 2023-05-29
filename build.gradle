@@ -56,6 +56,11 @@ shadowJar {
     }
 }
 
+bootJar {
+    archiveFileName = "fatjar22.jar"
+    enabled = true
+}
+
 
 tasks.named('test') {
     useJUnitPlatform()
