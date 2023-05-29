@@ -86,8 +86,8 @@ public class AdvertisementRestController {
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
 
         Blob image = storage.createFrom(blobInfo, Paths.get(filePath));
+        logger.info(image.getMediaLink());
         return image.getMediaLink();
-
     }
 
     public String uploadFile(MultipartFile image) throws IOException {
@@ -98,14 +98,14 @@ public class AdvertisementRestController {
         String imageName = generateImageName() + extension;
         String file_path = dir + "/" + imageName;
         image.transferTo(Path.of(file_path));
-        File file = new File(file_path);
-        boolean deleted = file.delete();
 
-        if (deleted) {
-            return originalFilename;
-        } else {
-            return null;
-        }
+        String path = uploadObject(image.getOriginalFilename(), file_path);
+        File file = new File(file_path);
+        file.delete();
+
+        String filename = path.substring(path.lastIndexOf('/') + 1);
+        path = filename.substring(0, filename.indexOf('?'));
+        return path;
     }
 
     @GetMapping("/advertisement/{id}")

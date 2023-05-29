@@ -51,12 +51,13 @@ async function addAdvertisement(ad) {
     card.classList.add("position-relative");
 
     card.setAttribute("data-ad-id", ad.id)
+    const gcloudUrl = "https://storage.googleapis.com/bucket-1684830831/";
     setAdvertOnclick(card);
     card.innerHTML += `
                         <a class="stretched-link advertisement-link" data-bs-toggle="modal" href="#full-advertisement-display" role="button"></a>
                         <div class="card shadow-sm border-">
                         <i id="remove-icon" class="bi bi-trash remove-icon"></i>
-                        <img class="w-100 h-100" src="${ad.image}"
+                        <img class="w-100 h-100" src="${gcloudUrl} + ${ad.image}">
                         <div class="card-body">
                             <p class="card-title text-bold fs-4">${ad.title}</p>
                             <p class="card-text">${ad.description}</p>

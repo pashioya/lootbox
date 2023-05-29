@@ -14,8 +14,8 @@ public class Seeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        Advertisement car = new Advertisement("bob@gmail.com", "0487667810", "static/images/car.jpeg", "my car", "car in pristine condition for 1M$");
-        Advertisement cupboard = new Advertisement("carlos@gmail.com", "0477813710", "static/images/cupboard.jpeg", "my cupboard", "cupboard in pristine condition for 10$");
+        Advertisement car = new Advertisement("bob@gmail.com", "0487667810", "car.jpeg", "my car", "car in pristine condition for 1M$");
+        Advertisement cupboard = new Advertisement("carlos@gmail.com", "0477813710", "cupboard.jpeg", "my cupboard", "cupboard in pristine condition for 10$");
 
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
