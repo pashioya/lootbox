@@ -62,9 +62,7 @@ async function addAdvertisement(ad) {
                             <p class="card-title text-bold fs-4">${ad.title}</p>
                             <p class="card-text">${ad.description}</p>
                         </div>`;
-    const removeIcon = document.getElementById("remove-icon");
-    removeIcon.addEventListener('click', removeIdea);
-
     feed.appendChild(card);
+    location.reload();
 }
 

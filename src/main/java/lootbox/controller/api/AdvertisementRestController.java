@@ -33,7 +33,7 @@ public class AdvertisementRestController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final AdvertisementRepository advertisementRepo;
     private final ModelMapper modelMapper;
-    private final String BUCKET_NAME = "bucket-1684830831";
+    private final String BUCKET_NAME = "lootbox-bucketeu";
 
     @PostMapping(path = "/add-advertisement", consumes = {"multipart/form-data"})
     public ResponseEntity<AdvertisementDto> addAdvertisement(@ModelAttribute @Valid NewAdvertisementDto newAdvertisementDto) throws IOException {
