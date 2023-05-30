@@ -106,8 +106,7 @@
                         <div class="advertisement col border-none transformable position-relative" th:each="advertisement : ${advertisements}" th:attr="data-ad-id=${advertisement.getId()}">
                             <a class="stretched-link advertisement-link" data-bs-toggle="modal" href="#full-advertisement-display" role="button"></a>
                             <div class="card shadow-sm border-">
-                                <i id="remove-icon" class="bi bi-trash remove-icon"></i>
-                                <img class="w-100 h-100" th:src="'https://storage.googleapis.com/lootbox-bucketeu/' + ${advertisement.getImage()}">
+                                <img alt="ad image" class="w-100 h-100 ad-img" th:src="'https://storage.googleapis.com/lootbox-bucketeu/' + ${advertisement.getImage()}">
                                 <div class="card-body">
                                     <p class="card-title text-bold fs-4" th:text="${advertisement.getTitle()}"></p>
                                     <p class="card-text" th:text="${advertisement.getDescription()}"></p>
@@ -223,6 +222,12 @@
                         <p class="card-text" id="full-description">s</p>
                         <p class="card-title text-bold fs-4" id="full-email">s</p>
                         <p class="card-text" id="full-phone-number">s</p>
+<!--                        delete button-->
+                        <button
+                                class="w-100 mb-2 btn btn-lg rounded-3 btn-danger"
+                                id="delete-button">
+                            Delete
+                        </button>
                     </div>
                 </div>
             </div>

@@ -3,6 +3,7 @@ package lootbox.controller.api;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.*;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import lootbox.controller.api.Dto.AdvertisementDto;
 import lootbox.controller.api.Dto.NewAdvertisementDto;
 import lootbox.domain.Advertisement;
@@ -22,89 +23,30 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Optional;
 import java.util.Random;
 
 @RestController
 @RequestMapping("/api")
+@AllArgsConstructor
 public class AdvertisementRestController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final AdvertisementRepository advertisementRepo;
     private final ModelMapper modelMapper;
-    String keyPath = "src/main/resources/infra3-leemans-freddy-0f7fb09ef959.json";
-    GoogleCredentials credentials;
-    String BUCKET_NAME = "lootbox-bucketeu";
-    Storage storage;
-
-    public AdvertisementRestController(AdvertisementRepository advertisementRepo, ModelMapper modelMapper) throws IOException {
-        this.advertisementRepo = advertisementRepo;
-        this.modelMapper = modelMapper;
-        this.credentials = GoogleCredentials.fromStream(new FileInputStream(keyPath));
-        this.storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
-    }
+    private final String BUCKET_NAME = "bucket-1684830831";
 
     @PostMapping(path = "/add-advertisement", consumes = {"multipart/form-data"})
-    public ResponseEntity<AdvertisementDto> addIdea(@ModelAttribute @Valid NewAdvertisementDto newAdvertisementDto) throws IOException {
-        logger.info("hello");
-        String path = uploadFile(newAdvertisementDto.getImage());
+    public ResponseEntity<AdvertisementDto> addAdvertisement(@ModelAttribute @Valid NewAdvertisementDto newAdvertisementDto) throws IOException {
+        logger.info("Adding advertisement: {}", newAdvertisementDto.getTitle());
+
+        String imagePath = uploadFile(newAdvertisementDto.getImage());
 
         Advertisement createdAd = modelMapper.map(newAdvertisementDto, Advertisement.class);
-        createdAd.setImage(path);
-        logger.info(createdAd.toString());
-
+        createdAd.setImage(imagePath);
         advertisementRepo.save(createdAd);
-        AdvertisementDto createdAdDto = new AdvertisementDto(createdAd.getEmail(), createdAd.getPhoneNumber(), createdAd.getImage(), createdAd.getTitle(), createdAd.getDescription());
-        return new ResponseEntity<>(createdAdDto, HttpStatus.CREATED);
-    }
 
-    @DeleteMapping("/delete-advertisement/{id}")
-    public ResponseEntity<Void> deleteAdvertisement(@PathVariable int id) {
-        if (advertisementRepo.existsById((long) id)) {
-            String path = advertisementRepo.findById((long) id).get().getImage();
-            advertisementRepo.deleteById((long) id);
-            deleteFile(path);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    private void deleteFile(String imgPath) {
-        storage.delete(BUCKET_NAME, imgPath);
-    }
-
-
-    public static String generateImageName() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
-        String timestamp = dateFormat.format(new Date());
-        int randomNum = new Random().nextInt(1000000);
-        return "image_" + timestamp + "_" + randomNum;
-    }
-
-    public String uploadObject(String objectName, String filePath) throws IOException {
-        BlobId blobId = BlobId.of(BUCKET_NAME, objectName);
-        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
-
-        Blob image = storage.createFrom(blobInfo, Paths.get(filePath));
-        logger.info(image.getMediaLink());
-        return image.getMediaLink();
-    }
-
-    public String uploadFile(MultipartFile image) throws IOException {
-        String dir = System.getProperty("user.dir");
-
-        String originalFilename = image.getOriginalFilename();
-        String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-        String imageName = generateImageName() + extension;
-        String file_path = dir + "/" + imageName;
-        image.transferTo(Path.of(file_path));
-
-        String path = uploadObject(image.getOriginalFilename(), file_path);
-        File file = new File(file_path);
-        file.delete();
-
-        String filename = path.substring(path.lastIndexOf('/') + 1);
-        path = filename.substring(0, filename.indexOf('?'));
-        return path;
+        AdvertisementDto createdAdDto = modelMapper.map(createdAd, AdvertisementDto.class);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdAdDto);
     }
 
     @GetMapping("/advertisement/{id}")
@@ -120,7 +62,80 @@ public class AdvertisementRestController {
         return new ResponseEntity<>(advertisementDto, HttpStatus.OK);
     }
 
+    @DeleteMapping("/delete-advertisement/{id}")
+    public ResponseEntity<Void> deleteAdvertisement(@PathVariable long id) throws IOException {
+        GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream("src/main/resources/infra3-leemans-freddy-0f7fb09ef959.json"));
+        Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
+
+        Optional<Advertisement> adOptional = advertisementRepo.findById(id);
+        if (adOptional.isPresent()) {
+            Advertisement ad = adOptional.get();
+            String imagePath = ad.getImage();
+            advertisementRepo.deleteById(id);
+            deleteFile(storage, imagePath);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    private void deleteFile(Storage storage, String imagePath) {
+        storage.delete(BUCKET_NAME, imagePath);
+    }
 
 
+    public static String generateImageName() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String timestamp = dateFormat.format(new Date());
+        int randomNum = new Random().nextInt(1000000);
+        return "image_" + timestamp + "_" + randomNum;
+    }
 
+    public String uploadObject(Storage storage, String objectName, String filePath) throws IOException {
+        BlobId blobId = BlobId.of(BUCKET_NAME, objectName);
+        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
+
+        Blob image = storage.createFrom(blobInfo, Paths.get(filePath));
+        logger.info("Uploaded image: {}", image.getMediaLink());
+        return image.getMediaLink();
+    }
+
+    public String uploadFile(MultipartFile image) throws IOException {
+        String dir = System.getProperty("user.dir");
+
+        String originalFilename = image.getOriginalFilename();
+        if (originalFilename == null) {
+            return null;
+        }
+        String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+        String imageName = generateImageName() + extension;
+        String filePath = dir + "/" + imageName;
+        image.transferTo(Path.of(filePath));
+
+        try {
+            Storage storage = getStorage();
+            String imagePath = uploadObject(storage, imageName, filePath);
+            deleteLocalFile(filePath);
+            return extractFilename(imagePath);
+        } catch (Exception e) {
+            logger.error("Error uploading image: {}", e.getMessage());
+            deleteLocalFile(filePath);
+            throw e;
+        }
+    }
+
+    private Storage getStorage() throws IOException {
+        GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream("src/main/resources/infra3-leemans-freddy-0f7fb09ef959.json"));
+        return StorageOptions.newBuilder().setCredentials(credentials).build().getService();
+    }
+
+    private void deleteLocalFile(String filePath) {
+        File file = new File(filePath);
+        file.delete();
+    }
+
+    private String extractFilename(String path) {
+        String filename = path.substring(path.lastIndexOf('/') + 1);
+        return filename.substring(0, filename.indexOf('?'));
+    }
 }

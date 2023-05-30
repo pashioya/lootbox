@@ -1,18 +1,19 @@
-const removeButtons = document.querySelectorAll('.advertisement #remove-icon');
+const removeButton = document.getElementById('delete-button');
 
-removeButtons.forEach((removeBtn) => {
-    removeBtn.addEventListener('click', removeIdea);
-});
+
+removeButton.addEventListener('click', removeIdea);
 
 export function removeIdea(event) {
-    if (event.target.tagName.toLowerCase() === 'a') {
-        return;
-    }
-
-    const clickedCard = event.target.closest('div.advertisement');
+    const clickedCard = event.target.closest('button');
     const cardId = clickedCard.getAttribute('data-ad-id')
 
     fetch(`/api/delete-advertisement/${cardId}`, {
         method: 'DELETE'
-    }).then()
+    }).then(
+        response => {
+            if (response.ok) {
+                window.location.reload();
+            }
+        }
+    )
 }

@@ -2,6 +2,8 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.1.0'
     id 'io.spring.dependency-management' version '1.1.0'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
+
 }
 
 group = 'kdg.be'
@@ -34,8 +36,31 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-    runtimeOnly 'org.postgresql:postgresql'
+    implementation 'org.postgresql:postgresql'
 }
+
+apply plugin: 'java'
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'lootbox.LootBoxApplication'
+        )
+    }
+}
+
+shadowJar {
+    archiveFileName = "fatJar.jar"
+    mergeServiceFiles()
+    manifest {
+        attributes 'Main-Class': 'lootbox.LootBoxApplication'
+    }
+}
+
+bootJar {
+    archiveFileName = "fatjar22.jar"
+    enabled = true
+}
+
 
 tasks.named('test') {
     useJUnitPlatform()
