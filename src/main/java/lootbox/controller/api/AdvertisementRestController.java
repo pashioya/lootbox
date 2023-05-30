@@ -22,7 +22,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 
 @RestController
@@ -33,7 +32,7 @@ public class AdvertisementRestController {
     private final ModelMapper modelMapper;
     String keyPath = "src/main/resources/infra3-leemans-freddy-0f7fb09ef959.json";
     GoogleCredentials credentials;
-    String BUCKET_NAME = "bucket-1684830831";
+    String BUCKET_NAME = "lootbox-bucketeu";
     Storage storage;
 
     public AdvertisementRestController(AdvertisementRepository advertisementRepo, ModelMapper modelMapper) throws IOException {

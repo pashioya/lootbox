@@ -51,7 +51,7 @@ async function addAdvertisement(ad) {
     card.classList.add("position-relative");
 
     card.setAttribute("data-ad-id", ad.id)
-    const gcloudUrl = "https://storage.googleapis.com/bucket-1684830831/";
+    const gcloudUrl = "https://storage.googleapis.com/lootbox-bucketeu/";
     setAdvertOnclick(card);
     card.innerHTML += `
                         <a class="stretched-link advertisement-link" data-bs-toggle="modal" href="#full-advertisement-display" role="button"></a>
