@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -125,10 +126,23 @@ public class AdvertisementRestController {
     }
 
     private Storage getStorage() throws IOException {
-        GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream("src/main/resources/infra3-leemans-freddy-0f7fb09ef959.json"));
+        String json = "{\n" +
+                "  \"type\": \"service_account\",\n" +
+                "  \"project_id\": \"\",\n" +
+                "  \"private_key_id\": \"\",\n" +
+                "  \"private_key\": \"\",\n" +
+                "  \"client_email\": \"\",\n" +
+                "  \"client_id\": \"\",\n" +
+                "  \"auth_uri\": \"\",\n" +
+                "  \"token_uri\": \"\",\n" +
+                "  \"auth_provider_x509_cert_url\": \"\",\n" +
+                "  \"client_x509_cert_url\": \"\",\n" +
+                "  \"universe_domain\": \"googleapis.com\"\n" +
+                "}";
+
+        GoogleCredentials credentials = GoogleCredentials.fromStream(new ByteArrayInputStream(json.getBytes()));
         return StorageOptions.newBuilder().setCredentials(credentials).build().getService();
     }
-
     private void deleteLocalFile(String filePath) {
         File file = new File(filePath);
         file.delete();
