@@ -44,7 +44,7 @@ DNS_ZONE="lootbox-store"
 DNS_NAME="www.lootbox-store.site."
 
 # Creates the Cloud SQL instance
-create_sql() {
+create_sql() { 
 	echo "Creating Cloud SQL instance..."
 	gcloud sql instances create $DB_SERVER_NAME \
 		--project=$PROJECT_ID \
@@ -57,7 +57,7 @@ create_sql() {
 }
 
 # Create Cloud database and user
-create_db() {
+create_db() { 
 	echo "Creating database and user..."
 	gcloud sql databases create $DB_NAME \
 		--instance=$DB_SERVER_NAME
@@ -66,14 +66,14 @@ create_db() {
 }
 
 # Clone the web page repo, Create Cloud Storage bucket and upload the static files
-create_bucket() {
+create_bucket() { 
 	echo "Creating storage bucket..."
 	gsutil mb -l $REGION -p $PROJECT_ID gs://$BUCKET_NAME
 	gsutil iam ch allUsers:objectViewer gs://$BUCKET_NAME
 }
 
 # Creates the VM
-create_vm() {
+create_vm() { 
 	echo "Creating VM..."
 	gcloud compute instances create $VM_NAME \
 		--project=$PROJECT_ID \
@@ -90,7 +90,7 @@ create_vm() {
 }
 
 # Creates and configures the VPC
-create_vpc() {
+create_vpc() { 
 	echo "Creating VPC network..."
 	gcloud compute networks create $VPC_NAME \
 		--project=$PROJECT_ID \
@@ -117,7 +117,7 @@ create_vpc() {
 }
 
 # Set up private connection from VM to SQL
-setup_private() {
+setup_private() { 
 	echo "Establish private connection from VM to SQL..."
 	gcloud sql instances patch $DB_SERVER_NAME \
 		--project=$PROJECT_ID \
@@ -127,7 +127,7 @@ setup_private() {
 }
 
 # Create DNS zone and configure DNS settings
-setup_dns() {
+setup_dns() { 
 	echo "Setting up DNS..."
 	gcloud dns --project=$PROJECT_ID managed-zones create $DNS_ZONE \
 		--description="" \
@@ -142,10 +142,10 @@ setup_dns() {
 		--ttl="300"
 }
 
-#create_vpc
-#create_sql
-#create_db
-#create_bucket
-#create_vm
+create_vpc
+create_sql
+create_db
+create_bucket
+create_vm
 setup_private
-#setup_dns
+setup_dns

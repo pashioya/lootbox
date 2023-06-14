@@ -2,7 +2,6 @@ FROM ubuntu:20.04
 WORKDIR /app
 COPY fatjar22.jar /app/fatjar.jar
 RUN apt-get update \
-        && apt-get install -y postgresql-client \
-        openjdk-17-jdk
+        && apt-get install -y openjdk-17-jdk
 EXPOSE 8080
 CMD ["java", "-jar", "/app/fatjar.jar"]
