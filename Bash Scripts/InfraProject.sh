@@ -3,7 +3,7 @@
 # Description	: This script deploys a web app on a newly instantiated VM and Cloud SQL database on a VPC and configures DNS
 
 # Set variables
-PROJECT_ID="infra3-leemans-freddy"
+PROJECT_ID="infra3-ashioya-paul"
 BUCKET_NAME="lootbox-bucketeu"
 VM_NAME="lootbox-vm-1"
 ZONE="europe-west1-b"
@@ -29,19 +29,19 @@ sudo apt-get install -y ufw docker-ce docker-ce-cli containerd.io docker-buildx-
 ufw --force enable
 ufw allow 22/tcp
 ufw allow 80/tcp'
-DB_NAME="postgres-sql-1684826042eu"
-DB_SERVER_NAME="postgres-sql-1684825152eu"
+DB_NAME="lootbox-db"
+DB_SERVER_NAME="postgres-sql-2"
 DB_TIER="db-g1-small"
 REGION="europe-west1"
 DB_VERSION="POSTGRES_14"
 USER="lootbox-db-eu"
-VPC_NAME="lootbox-vpceu"
-SUBNET_NAME="lootbox-subneteu"
+VPC_NAME="lootbox-vpc-eu"
+SUBNET_NAME="lootbox-subnet-eu"
 SUBNET_RANGE="10.0.0.0/28"
 FIREWALL_RULE="web-traffic-ssh-traffic"
 PORTS="tcp:22,tcp:80,tcp:443"
-DNS_ZONE="lootbox-store"
-DNS_NAME="www.lootbox-store.site."
+DNS_ZONE="paul-ashioya"
+DNS_NAME="paul-ashioya.com"
 
 # Creates the Cloud SQL instance
 create_sql() { 
@@ -50,7 +50,6 @@ create_sql() {
 		--project=$PROJECT_ID \
 		--tier=$DB_TIER \
 		--region=$REGION \
-		--network=$VPC_NAME \
 		--database-version=$DB_VERSION \
 		--authorized-networks=0.0.0.0/0 \
 		--root-password=root
@@ -62,7 +61,7 @@ create_db() {
 	gcloud sql databases create $DB_NAME \
 		--instance=$DB_SERVER_NAME
 	read -s -p "Enter password for $USER: " passwd
-	gcloud sql users create $USER --instance=$DB_SERVER_NAME --password=$passwd
+	gcloud sql users create $USER --instance=$DB_SERVER_NAME --password="$passwd"
 }
 
 # Clone the web page repo, Create Cloud Storage bucket and upload the static files
@@ -140,12 +139,14 @@ setup_dns() {
 		--zone=$DNS_ZONE \
 		--rrdatas=$EXT_IP_ADDRESS \
 		--ttl="300"
+
+		gcloud dns --project=infra3-ashioya-paul record-sets create www.paul-ashioya.com. --zone="paul-ashioya" --type="A" --ttl="600" --rrdatas="35.189.198.119"
 }
 
-create_vpc
-create_sql
-create_db
-create_bucket
-create_vm
-setup_private
+#create_vpc
+#create_sql
+#create_db
+#create_bucket
+#create_vm
+#setup_private
 setup_dns

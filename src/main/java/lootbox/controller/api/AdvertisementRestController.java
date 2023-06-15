@@ -18,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -65,8 +64,7 @@ public class AdvertisementRestController {
 
     @DeleteMapping("/delete-advertisement/{id}")
     public ResponseEntity<Void> deleteAdvertisement(@PathVariable long id) throws IOException {
-        GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream("src/main/resources/infra3-leemans-freddy-0f7fb09ef959.json"));
-        Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
+        Storage storage = getStorage();
 
         Optional<Advertisement> adOptional = advertisementRepo.findById(id);
         if (adOptional.isPresent()) {
@@ -126,18 +124,30 @@ public class AdvertisementRestController {
     }
 
     private Storage getStorage() throws IOException {
+        String type = "";
+        String projectId = "";
+        String privateKeyId = "";
+        String privateKey = "";
+        String clientEmail = "";
+        String clientId = "";
+        String authUri = "";
+        String tokenUri = "";
+        String authProviderCertUrl = "";
+        String clientCertUrl = "";
+        String universeDomain = "";
+
         String json = "{\n" +
-                "  \"type\": \"service_account\",\n" +
-                "  \"project_id\": \"\",\n" +
-                "  \"private_key_id\": \"\",\n" +
-                "  \"private_key\": \"\",\n" +
-                "  \"client_email\": \"\",\n" +
-                "  \"client_id\": \"\",\n" +
-                "  \"auth_uri\": \"\",\n" +
-                "  \"token_uri\": \"\",\n" +
-                "  \"auth_provider_x509_cert_url\": \"\",\n" +
-                "  \"client_x509_cert_url\": \"\",\n" +
-                "  \"universe_domain\": \"googleapis.com\"\n" +
+                "  \"type\": \"" + type + "\",\n" +
+                "  \"project_id\": \"" + projectId + "\",\n" +
+                "  \"private_key_id\": \"" + privateKeyId + "\",\n" +
+                "  \"private_key\": \"" + privateKey + "\",\n" +
+                "  \"client_email\": \"" + clientEmail + "\",\n" +
+                "  \"client_id\": \"" + clientId + "\",\n" +
+                "  \"auth_uri\": \"" + authUri + "\",\n" +
+                "  \"token_uri\": \"" + tokenUri + "\",\n" +
+                "  \"auth_provider_x509_cert_url\": \"" + authProviderCertUrl + "\",\n" +
+                "  \"client_x509_cert_url\": \"" + clientCertUrl + "\",\n" +
+                "  \"universe_domain\": \"" + universeDomain + "\"\n" +
                 "}";
 
         GoogleCredentials credentials = GoogleCredentials.fromStream(new ByteArrayInputStream(json.getBytes()));
